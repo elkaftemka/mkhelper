@@ -5,6 +5,9 @@ const Warn = require('../models/Warn');
 
 const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
 
+// Username bot Anda yang sebenarnya di Telegram
+const BOT_USERNAME = 'penjagajembot'; 
+
 // 🟢 PERINTAH /start
 bot.command('start', async (ctx) => {
   if (ctx.chat.type === 'private') {
@@ -17,7 +20,7 @@ bot.command('start', async (ctx) => {
 <i>❝ Selamat datang di pusat komando. Sistem otonom siap. ❞</i>`;
     
     return ctx.replyWithHTML(text, Markup.inlineKeyboard([
-      [Markup.button.url('➕ Deploy ke Grup Anda', `https://t.me/${ctx.botInfo.username}?startgroup=true`)],
+      [Markup.button.url('➕ Deploy ke Grup Anda', `https://t.me/${BOT_USERNAME}?startgroup=true`)],
       [Markup.button.callback('⚙️ Panel Kontrol', 'panel'), Markup.button.callback('📖 Manual', 'manual')]
     ]));
   } else {
@@ -152,11 +155,11 @@ bot.action('close_panel', (ctx) => {
   ctx.deleteMessage();
 });
 
-// --- PINTU MASUK VERCEL SERVERLESS (DIPERBAIKI) ---
+// --- PINTU MASUK VERCEL SERVERLESS ---
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
-      await bot.handleUpdate(req.body); // Diperbaiki: Hapus parameter 'res' di sini
+      await bot.handleUpdate(req.body);
       return res.status(200).send('OK');
     } catch (err) {
       console.error(err);
