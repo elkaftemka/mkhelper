@@ -152,17 +152,17 @@ bot.action('close_panel', (ctx) => {
   ctx.deleteMessage();
 });
 
-// --- PINTU MASUK VERCEL SERVERLESS ---
+// --- PINTU MASUK VERCEL SERVERLESS (DIPERBAIKI) ---
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
-      await bot.handleUpdate(req.body, res);
-      if (!res.headersSent) res.status(200).send('OK');
+      await bot.handleUpdate(req.body); // Diperbaiki: Hapus parameter 'res' di sini
+      return res.status(200).send('OK');
     } catch (err) {
       console.error(err);
-      res.status(500).send('Something went wrong.');
+      return res.status(500).send('Something went wrong.');
     }
   } else {
-    res.status(200).send('Sistem Bot Online dan Menunggu Webhook Telegram.');
+    return res.status(200).send('Sistem Bot Online dan Menunggu Webhook Telegram.');
   }
 }
