@@ -3,17 +3,7 @@ const connectDB = require('../lib/db');
 const Ban = require('../models/Ban');
 const Warn = require('../models/Warn');
 
-// Inisialisasi Bot dengan Token dari .env
 const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
-
-// Placeholder ID Stiker (Silakan ganti dengan ID Stiker asli Anda nanti jika ingin diaktifkan)
-const STICKER = {
-  start: "CAACAgIAAxkBAAE...", // Ganti dengan File ID Stiker Radar/Shield
-  warn: "CAACAgIAAxkBAAE...",  // Ganti dengan File ID Stiker Kartu Kuning
-  ban: "CAACAgIAAxkBAAE...",   // Ganti dengan File ID Stiker Palu Godam
-  search: "CAACAgIAAxkBAAE...",// Ganti dengan File ID Stiker Scanner
-  error: "CAACAgIAAxkBAAE..."  // Ganti dengan File ID Stiker Error 404
-};
 
 // 🟢 PERINTAH /start
 bot.command('start', async (ctx) => {
@@ -26,7 +16,6 @@ bot.command('start', async (ctx) => {
 ╰ 🛡️ <b>Status   :</b> Menunggu Instruksi</blockquote>
 <i>❝ Selamat datang di pusat komando. Sistem otonom siap. ❞</i>`;
     
-    // await ctx.replyWithSticker(STICKER.start);
     return ctx.replyWithHTML(text, Markup.inlineKeyboard([
       [Markup.button.url('➕ Deploy ke Grup Anda', `https://t.me/${ctx.botInfo.username}?startgroup=true`)],
       [Markup.button.callback('⚙️ Panel Kontrol', 'panel'), Markup.button.callback('📖 Manual', 'manual')]
@@ -45,7 +34,6 @@ bot.command('start', async (ctx) => {
 ╰ 👮‍♂️ <b>Admin   :</b> <code>${adminCount}</code> Otoritas Aktif</blockquote>
 <i>❝ Pemindaian area selesai. Protokol keamanan beroperasi. ❞</i>`;
     
-    // await ctx.replyWithSticker(STICKER.start);
     return ctx.replyWithHTML(text);
   }
 });
@@ -72,7 +60,6 @@ bot.command('warn', async (ctx) => {
 ╰ 📊 <b>Status :</b> <code>[ ${userWarn.count} / 3 ]</code></blockquote>
 <i>❝ Peringatan dicatat. Pelanggaran selanjutnya berakibat sanksi otomatis. ❞</i>`;
 
-  // await ctx.replyWithSticker(STICKER.warn);
   return ctx.replyWithHTML(text, { reply_to_message_id: ctx.message.message_id });
 });
 
@@ -102,7 +89,6 @@ bot.command('ban', async (ctx) => {
 ╰ 👮‍♂️ <b>Otoritas :</b> @${ctx.from.username || ctx.from.first_name}</blockquote>
 <i>❝ Ancaman terdeteksi dan telah dibersihkan dari ekosistem secara permanen. ❞</i>`;
     
-    // await ctx.replyWithSticker(STICKER.ban);
     return ctx.replyWithHTML(text);
   } catch (error) {
     return ctx.reply("Gagal mengeksekusi ban. Pastikan bot adalah Admin.");
@@ -127,7 +113,6 @@ bot.command('cari', async (ctx) => {
 ╰ 👮‍♂️ <b>Oleh   :</b> ${bannedUser.adminId}</blockquote>
 <i>❝ Target ditemukan dalam Daftar Hitam. Akses diputus permanen. ❞</i>`;
     
-    // await ctx.replyWithSticker(STICKER.search);
     return ctx.replyWithHTML(text, Markup.inlineKeyboard([
       Markup.button.url('💬 M U L A I  C H A T', `tg://user?id=${queryId}`)
     ]));
@@ -147,7 +132,6 @@ bot.command('cari', async (ctx) => {
 ╰ ⚠️ <b>Warn   :</b> <code>[ ${warnCount} / 3 ]</code></blockquote>
 <i>❝ Target berstatus aman dan sedang berada di pantauan grup. ❞</i>`;
     
-    // await ctx.replyWithSticker(STICKER.search);
     return ctx.replyWithHTML(text, Markup.inlineKeyboard([
       Markup.button.url('💬 M U L A I  C H A T', `tg://user?id=${queryId}`)
     ]));
@@ -159,7 +143,6 @@ bot.command('cari', async (ctx) => {
 ╰ 🛑 <b>Hasil    :</b> <code>Nihil / Tidak ditemukan</code></blockquote>
 <i>❝ Sistem gagal melacak ID. Entitas tidak ada di arsip grup maupun daftar hitam. ❞</i>`;
     
-    // await ctx.replyWithSticker(STICKER.error);
     return ctx.replyWithHTML(text);
   }
 });
@@ -174,7 +157,6 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
       await bot.handleUpdate(req.body, res);
-      // Jika res belum dikirim oleh Telegraf
       if (!res.headersSent) res.status(200).send('OK');
     } catch (err) {
       console.error(err);
